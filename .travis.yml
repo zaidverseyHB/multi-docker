@@ -21,5 +21,19 @@ after_success:
   - docker push zaidverseyhb/multi-nginx
   - docker push zaidverseyhb/multi-server
   - docker push zaidverseyhb/multi-worker
+  # Tap EBS to deploy the containers
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-394932121343
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
 
 
