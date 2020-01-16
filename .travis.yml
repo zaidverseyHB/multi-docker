@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t zaidverseyhb/react-test -f ./client/Dockerfile.dev ./client #using dev dockerfile for testing
+
+script: #run tests. If any script return with a status other than zero, than Travis will automatically assume it's an error
+  - docker run -e CI=true zaidverseyhb/react-test npm test
+  # no longer works -> - docker run zaidverseyhb/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t zaidverseyhb/multi-client ./client
+  - docker build -t zaidverseyhb/multi-nginx ./nginx
+  - docker build -t zaidverseyhb/multi-server ./server
+  - docker build -t zaidverseyhb/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push zaidverseyhb/multi-client
+  - docker push zaidverseyhb/multi-nginx
+  - docker push zaidverseyhb/multi-server
+  - docker push zaidverseyhb/multi-worker
+
+
