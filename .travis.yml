@@ -1,4 +1,14 @@
 sudo: required
+# blocklist
+branches:
+  except:
+  - feature
+
+# safelist
+branches:
+  only:
+  - master
+
 services:
   - docker
 
